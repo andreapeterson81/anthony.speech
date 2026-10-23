@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Susan B. Anthony Speech: 5-Day IEP Canvas Module</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Atkinson Hyperlegible Font for High Legibility -->
+    <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        iepBlue: '#1e40af',
+                        iepBlueLight: '#eff6ff',
+                        iepGreen: '#047857',
+                        iepGreenLight: '#ecfdf5',
+                        iepAmber: '#b45309',
+                        iepAmberLight: '#fef3c7',
+                        iepPurple: '#6b21a8',
+                        iepPurpleLight: '#f3e8ff'
+                    },
+                    fontFamily: {
+                        sans: ['Atkinson Hyperlegible', 'Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-size: 19px; /* Expanded base size for IEP visual accessibility */
+            line-height: 1.65;
+        }
+        
+        /* High accessibility focus rings */
+        button:focus-visible, select:focus-visible, textarea:focus-visible, input:focus-visible {
+            outline: 3px solid #2563eb !important;
+            outline-offset: 2px !important;
+        }
+
+        .tts-active {
+            animation: tts-pulse 1.2s infinite ease-in-out;
+            background-color: #fef08a !important;
+            color: #854d0e !important;
+            border-color: #ca8a04 !important;
+        }
+
+        @keyframes tts-pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.04); }
+            100% { transform: scale(1); }
+        }
+
+        .sentence-clickable {
+            transition: all 0.2s ease;
+        }
+        .sentence-clickable:hover {
+            background-color: #fef9c3;
+            cursor: pointer;
+        }
+        .sentence-selected {
+            background-color: #fef08a !important;
+            color: #713f12 !important;
+            font-weight: bold;
+            border: 2px solid #eab308;
+            padding: 2px 6px;
+            border-radius: 6px;
+        }
+    </style>
+</head>
+<body class="bg-slate-100 dark:bg-slate-900 text-slate-900 dark:text-slate-100 font-sans min-h-screen flex flex-col transition-colors duration-300">
+
+    <!-- Top Accessible Navigation & Audio Toolbar Header -->
+    <header class="sticky top-0 z-50 bg-white dark:bg-slate-800 border-b-4 border-blue-600 shadow-md">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
+            
+            <!-- Module Title & Badge -->
+            <div class="flex items-center space-x-3">
+                <div class="w-12 h-12 rounded-2xl bg-blue-700 text-white flex items-center justify-center text-xl font-extrabold shadow-sm">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-extrabold text-blue-950 dark:text-blue-300 leading-tight">Susan B. Anthony Speech Canvas</h1>
+                    <p class="text-xs font-bold text-slate-600 dark:text-slate-400">9th Grade ELA • 5-Day Scaffolded IEP Module</p>
+                </div>
+            </div>
+
+            <!-- Master Text-to-Speech Control Console -->
+            <div class="flex items-center space-x-2 bg-slate-100 dark:bg-slate-700 p-2 rounded-2xl border border-slate-300 dark:border-slate-600">
+                <span class="text-xs font-extrabold px-2 text-slate-700 dark:text-slate-300 uppercase tracking-wider hidden lg:inline">
+                    <i class="fa-solid fa-volume-high text-blue-600 dark:text-blue-400 mr-1"></i> Audio Bar
+                </span>
+                
+                <!-- Speed Toggle -->
+                <button onclick="toggleTTSSpeed()" id="tts-speed-btn" title="Toggle Audio Speed" class="px-2.5 py-1.5 bg-white dark:bg-slate-800 text-blue-900 dark:text-blue-200 text-xs font-extrabold rounded-xl border border-slate-300 dark:border-slate-600 hover:bg-slate-50 transition shadow-sm">
+                    Speed: <span id="tts-speed-label">0.8x</span>
+                </button>
+
+                <!-- Pause/Resume -->
+                <button onclick="pauseResumeTTS()" id="tts-pause-btn" title="Pause or Resume Audio" class="px-2.5 py-1.5 bg-amber-100 dark:bg-amber-900/60 text-amber-900 dark:text-amber-200 text-xs font-extrabold rounded-xl border border-amber-300 hover:bg-amber-200 transition">
+                    <i class="fa-solid fa-pause"></i> <span class="hidden sm:inline">Pause</span>
+                </button>
+
+                <!-- Global Stop Button -->
+                <button onclick="stopTTS()" title="Stop Audio" class="px-2.5 py-1.5 bg-rose-100 dark:bg-rose-900/60 text-rose-900 dark:text-rose-200 text-xs font-extrabold rounded-xl border border-rose-300 hover:bg-rose-200 transition">
+                    <i class="fa-solid fa-square"></i> <span class="hidden sm:inline">Stop</span>
+                </button>
+
+                <!-- High Contrast Theme Toggle -->
+                <button id="theme-toggle" title="Toggle Dark/High Contrast Mode" class="p-2 rounded-xl bg-slate-200 dark:bg-slate-800 text-slate-800 dark:text-amber-300 hover:bg-slate-300 transition">
+                    <i class="fa-solid fa-moon dark:hidden"></i>
+                    <i class="fa-solid fa-sun hidden dark:block"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Dynamic Overall Progress Bar -->
+        <div class="w-full bg-slate-200 dark:bg-slate-700 h-3">
+            <div id="overall-progress" class="bg-emerald-500 h-full w-[20%] transition-all duration-500"></div>
+        </div>
+    </header>
+
+    <!-- Main Application Body -->
+    <div class="flex-1 max-w-6xl w-full mx-auto px-4 py-6 flex flex-col md:flex-row gap-6">
+
+        <!-- 5-Day Navigation Sidebar -->
+        <aside class="w-full md:w-72 flex-shrink-0">
+            <nav class="bg-white dark:bg-slate-800 rounded-2xl p-4 border-2 border-slate-300 dark:border-slate-700 shadow-sm sticky top-24 space-y-2">
+                
+                <div class="flex items-center justify-between pb-2 border-b border-slate-200 dark:border-slate-700">
+                    <span class="text-xs font-extrabold uppercase tracking-wider text-slate-500 dark:text-slate-400">Daily Roadmap</span>
+                    <span id="star-count" class="text-xs font-extrabold text-amber-600 dark:text-amber-400 flex items-center space-x-1 bg-amber-50 dark:bg-amber-950/60 px-2 py-1 rounded-lg border border-amber-300">
+                        <i class="fa-solid fa-star text-amber-400"></i> <span>0 Stars</span>
+                    </span>
+                </div>
+
+                <!-- Navigation Day Tabs -->
+                <button onclick="switchDay(1)" id="day-btn-1" class="day-tab w-full flex items-center space-x-3 p-3 rounded-xl font-bold text-sm text-left transition bg-blue-100 text-blue-950 border-2 border-blue-600 dark:bg-blue-950 dark:text-blue-200">
+                    <span class="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center font-extrabold text-sm">1</span>
+                    <div class="flex-1">
+                        <div class="text-xs font-extrabold uppercase text-blue-900 dark:text-blue-300">Day 1</div>
+                        <div class="text-xs font-medium">Warm-Up & Video</div>
+                    </div>
+                    <i id="check-day-1" class="fa-solid fa-circle-check text-emerald-600 hidden text-base"></i>
+                </button>
+
+                <button onclick="switchDay(2)" id="day-btn-2" class="day-tab w-full flex items-center space-x-3 p-3 rounded-xl font-bold text-sm text-left text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700/50 transition">
+                    <span class="w-8 h-8 rounded-lg bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 flex items-center justify-center font-extrabold text-sm">2</span>
+                    <div class="flex-1">
+                        <div class="text-xs font-extrabold uppercase text-slate-500">Day 2</div>
+                        <div class="text-xs font-medium">Speech Chunks 1 & 2</div>
+                    </div>
+                    <i id="check-day-2" class="fa-solid fa-circle-check text-emerald-600 hidden text-base"></i>
+                </button>
+
+                <button onclick="switchDay(3)" id="day-btn-3" class="day-tab w-full flex items-center space-x-3 p-3 rounded-xl font-bold text-sm text-left text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700/50 transition">
+                    <span class="w-8 h-8 rounded-lg bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 flex items-center justify-center font-extrabold text-sm">3</span>
+                    <div class="flex-1">
+                        <div class="text-xs font-extrabold uppercase text-slate-500">Day 3</div>
+                        <div class="text-xs font-medium">Vocab & Main Claim</div>
+                    </div>
+                    <i id="check-day-3" class="fa-solid fa-circle-check text-emerald-600 hidden text-base"></i>
+                </button>
+
+                <button onclick="switchDay(4)" id="day-btn-4" class="day-tab w-full flex items-center space-x-3 p-3 rounded-xl font-bold text-sm text-left text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700/50 transition">
+                    <span class="w-8 h-8 rounded-lg bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 flex items-center justify-center font-extrabold text-sm">4</span>
+                    <div class="flex-1">
+                        <div class="text-xs font-extrabold uppercase text-slate-500">Day 4</div>
+                        <div class="text-xs font-medium">Claims & Logic Sorter</div>
+                    </div>
+                    <i id="check-day-4" class="fa-solid fa-circle-check text-emerald-600 hidden text-base"></i>
+                </button>
+
+                <button onclick="switchDay(5)" id="day-btn-5" class="day-tab w-full flex items-center space-x-3 p-3 rounded-xl font-bold text-sm text-left text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700/50 transition">
+                    <span class="w-8 h-8 rounded-lg bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 flex items-center justify-center font-extrabold text-sm">5</span>
+                    <div class="flex-1">
+                        <div class="text-xs font-extrabold uppercase text-slate-500">Day 5</div>
+                        <div class="text-xs font-medium">Self-Check & Exit Ticket</div>
+                    </div>
+                    <i id="check-day-5" class="fa-solid fa-circle-check text-emerald-600 hidden text-base"></i>
+                </button>
+
+                <!-- IEP Read-Aloud Helper Info -->
+                <div class="mt-4 p-3.5 bg-blue-50 dark:bg-slate-900 border-2 border-blue-200 dark:border-slate-700 rounded-xl space-y-1.5 text-xs">
+                    <div class="font-extrabold text-blue-950 dark:text-blue-300 flex items-center space-x-1.5">
+                        <i class="fa-solid fa-bullhorn text-blue-600"></i>
+                        <span>Text-to-Speech Ready</span>
+                    </div>
+                    <p class="text-slate-600 dark:text-slate-400">Click any blue <i class="fa-solid fa-volume-high text-blue-600"></i> button to hear questions or text read out loud.</p>
+                </div>
+
+            </nav>
+        </aside>
+
+        <!-- Main Display Screen for Daily Modules -->
+        <main class="flex-1 space-y-6">
+
+            <!-- ================= DAY 1 MODULE ================= -->
+            <section id="content-day-1" class="day-content space-y-6">
+                <!-- Banner -->
+                <div class="bg-blue-900 text-white p-6 rounded-2xl shadow-md space-y-2 border-l-8 border-blue-500 relative">
+                    <button onclick="speakElement('d1-banner-text')" title="Read Aloud Banner" class="tts-btn absolute top-4 right-4 bg-white/20 hover:bg-white/30 text-white p-2.5 rounded-xl text-xs font-bold transition flex items-center space-x-1.5">
+                        <i class="fa-solid fa-volume-high text-base"></i>
+                        <span>Listen</span>
+                    </button>
+                    <span class="px-3 py-1 bg-blue-700 text-blue-200 text-xs font-extrabold rounded-full uppercase tracking-wider">Day 1 Lesson</span>
+                    <div id="d1-banner-text">
+                        <h2 class="text-2xl font-extrabold">Day 1: Background & C-E-R Review</h2>
+                        <p class="text-sm text-blue-100">Welcome! Today we review argument basics (Claim, Evidence, Reasoning) and watch a video about Susan B. Anthony.</p>
+                    </div>
+                </div>
+
+                <!-- Activity 1: C-E-R Matching Game -->
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border-2 border-slate-200 dark:border-slate-700 shadow-sm space-y-4">
+                    <div class="flex items-center justify-between border-b pb-3">
+                        <div class="flex items-center space-x-2">
+                            <span class="p-2 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-lg text-sm font-bold"><i class="fa-solid fa-puzzle-piece"></i></span>
+                            <h3 class="text-lg font-extrabold text-slate-900 dark:text-white">Task 1: C-E-R Argument Review</h3>
+                        </div>
+                        <button onclick="speakElement('cer-task-desc')" class="tts-btn text-xs bg-blue-50 dark:bg-slate-700 text-blue-900 dark:text-blue-200 p-2 rounded-xl font-bold flex items-center space-x-1">
+                            <i class="fa-solid fa-volume-high text-blue-600"></i>
+                            <span>Read Directions</span>
+                        </button>
+                    </div>
+
+                    <p id="cer-task-desc" class="text-sm text-slate-700 dark:text-slate-300">Match the 3 parts of an argument to their definition below:</p>
+
+                    <div class="grid gap-4 sm:grid-cols-3">
+                        <!-- C Dropdown -->
+                        <div class="p-4 bg-slate-50 dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 space-y-2">
+                            <div class="flex justify-between items-center">
+                                <label class="font-extrabold text-sm text-blue-900 dark:text-blue-300">C = Claim</label>
+                                <button onclick="speakText('C equals Claim. What statement do you make that you believe is true?')" class="tts-btn text-xs text-blue-600 p-1"><i class="fa-solid fa-volume-high"></i></button>
+                            </div>
+                            <select id="cer-select-c" class="w-full p-3 bg-white dark:bg-slate-800 border-2 border-slate-300 dark:border-slate-600 rounded-xl text-xs font-bold outline-none focus:border-blue-600">
+                                <option value="">-- Choose Definition --</option>
+                                <option value="wrong1">Facts, statistics, and legal quotes</option>
+                                <option value="correct">The main statement or belief you argue is true</option>
+                                <option value="wrong2">The explanation of why facts matter</option>
+                            </select>
+                        </div>
+
+                        <!-- E Dropdown -->
+                        <div class="p-4 bg-slate-50 dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 space-y-2">
+                            <div class="flex justify-between items-center">
+                                <label class="font-extrabold text-sm text-blue-900 dark:text-blue-300">E = Evidence</label>
+                                <button onclick="speakText('E equals Evidence. Facts, laws, and legal proof that support your claim.')" class="tts-btn text-xs text-blue-600 p-1"><i class="fa-solid fa-volume-high"></i></button>
+                            </div>
+                            <select id="cer-select-e" class="w-full p-3 bg-white dark:bg-slate-800 border-2 border-slate-300 dark:border-slate-600 rounded-xl text-xs font-bold outline-none focus:border-blue-600">
+                                <option value="">-- Choose Definition --</option>
+                                <option value="correct">Facts, laws, and legal proof that support your claim</option>
+                                <option value="wrong1">An opinion made without any proof</option>
+                                <option value="wrong2">The name of the speech author</option>
+                            </select>
+                        </div>
+
+                        <!-- R Dropdown -->
+                        <div class="p-4 bg-slate-50 dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 space-y-2">
+                            <div class="flex justify-between items-center">
+                                <label class="font-extrabold text-sm text-blue-900 dark:text-blue-300">R = Reasoning</label>
+                                <button onclick="speakText('R equals Reasoning. Explanation of how your evidence proves your claim.')" class="tts-btn text-xs text-blue-600 p-1"><i class="fa-solid fa-volume-high"></i></button>
+                            </div>
+                            <select id="cer-select-r" class="w-full p-3 bg-white dark:bg-slate-800 border-2 border-slate-300 dark:border-slate-600 rounded-xl text-xs font-bold outline-none focus:border-blue-600">
+                                <option value="">-- Choose Definition --</option>
+                                <option value="wrong1">Voting illegally in a local election</option>
+                                <option value="correct">Explanation of how your evidence proves your claim</option>
+                                <option value="wrong2">A list of hard vocabulary terms</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div id="cer-feedback" class="hidden p-3.5 rounded-xl text-xs font-bold"></div>
+
+                    <div class="flex justify-between items-center pt-2">
+                        <button onclick="toggleHint('hint-cer')" class="text-xs font-bold text-amber-700 dark:text-amber-400 hover:underline flex items-center space-x-1">
+                            <i class="fa-solid fa-lightbulb"></i> <span>Need a Hint?</span>
+                        </button>
+                        <button onclick="checkCERDay1()" class="px-6 py-3 bg-blue-700 hover:bg-blue-800 text-white font-extrabold rounded-xl shadow transition text-sm">
+                            Check CER Answers
+                        </button>
+                    </div>
+
+                    <div id="hint-cer" class="hidden p-3.5 bg-amber-50 dark:bg-amber-950/50 border-2 border-amber-300 rounded-xl text-xs text-amber-950 dark:text-amber-200">
+                        <strong>Hint:</strong> <b>C</b>laim is your belief. <b>E</b>vidence is your facts and proof. <b>R</b>easoning is explaining how they connect!
+                    </div>
+                </div>
+
+                <!-- Activity 2: Embedded Video & Scaffolded Viewing Question -->
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border-2 border-slate-200 dark:border-slate-700 shadow-sm space-y-4">
+                    <div class="flex items-center justify-between border-b pb-3">
+                        <div class="flex items-center space-x-2">
+                            <span class="p-2 bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 rounded-lg text-sm font-bold"><i class="fa-solid fa-video"></i></span>
+                            <h3 class="text-lg font-extrabold text-slate-900 dark:text-white">Task 2: Watch Video & Answer Question</h3>
+                        </div>
+                        <button onclick="speakElement('d1-video-prompt')" class="tts-btn text-xs bg-purple-50 dark:bg-slate-700 text-purple-900 dark:text-purple-200 p-2 rounded-xl font-bold flex items-center space-x-1">
+                            <i class="fa-solid fa-volume-high text-purple-600"></i>
+                            <span>Read Prompt</span>
+                        </button>
+                    </div>
+
+                    <p id="d1-video-prompt" class="text-sm text-slate-700 dark:text-slate-300">Watch the video below about Susan B. Anthony, then complete the active reading prompt:</p>
+
+                    <!-- Embedded YouTube Player -->
+                    <div class="relative w-full aspect-video rounded-2xl overflow-hidden border-2 border-slate-300 dark:border-slate-700 bg-black shadow-inner">
+                        <iframe 
+                            class="absolute top-0 left-0 w-full h-full" 
+                            src="https://www.youtube-nocookie.com/embed/MvqpvmaJssA" 
+                            title="Susan B. Anthony Video" 
+                            frameborder="0" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                            allowfullscreen>
+                        </iframe>
+                    </div>
+
+                    <!-- Accommodated Response Area -->
+                    <div class="p-4 bg-slate-50 dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <label id="d1-q-title" class="text-sm font-extrabold text-slate-900 dark:text-slate-100">
+                                Question: Why was Susan B. Anthony arrested in 1872?
+                            </label>
+                            <button onclick="speakElement('d1-q-title')" class="tts-btn text-xs text-blue-600 p-1"><i class="fa-solid fa-volume-high"></i></button>
+                        </div>
+
+                        <div class="p-3 bg-blue-50 dark:bg-slate-800 border-l-4 border-blue-600 rounded-r-xl text-xs font-semibold text-blue-950 dark:text-blue-200 space-y-1">
+                            <p><i class="fa-solid fa-pen-to-square mr-1"></i> <strong>Sentence Starter Scaffold:</strong></p>
+                            <p class="italic">"Susan B. Anthony was arrested in 1872 because she voted in the presidential election, which was illegal for women at that time because..."</p>
+                        </div>
+
+                        <textarea id="d1-video-response" rows="2" placeholder="Finish typing your response here using the frame..." class="w-full p-3 rounded-xl border-2 border-slate-300 dark:border-slate-600 text-sm font-medium outline-none focus:border-blue-600 bg-white dark:bg-slate-800"></textarea>
+
+                        <div class="flex justify-between items-center">
+                            <button onclick="saveDay1Answer()" class="px-5 py-2.5 bg-purple-700 hover:bg-purple-800 text-white font-extrabold rounded-xl shadow transition text-xs">
+                                Save Task Response
+                            </button>
+                            <span id="d1-save-status" class="text-xs font-extrabold text-emerald-600 hidden"><i class="fa-solid fa-circle-check"></i> Saved to Canvas!</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================= DAY 2 MODULE ================= -->
+            <section id="content-day-2" class="day-content hidden space-y-6">
+                <!-- Banner -->
+                <div class="bg-purple-900 text-white p-6 rounded-2xl shadow-md space-y-2 border-l-8 border-purple-500 relative">
+                    <button onclick="speakElement('d2-banner-text')" title="Read Aloud Banner" class="tts-btn absolute top-4 right-4 bg-white/20 hover:bg-white/30 text-white p-2.5 rounded-xl text-xs font-bold transition flex items-center space-x-1.5">
+                        <i class="fa-solid fa-volume-high text-base"></i>
+                        <span>Listen</span>
+                    </button>
+                    <span class="px-3 py-1 bg-purple-700 text-purple-200 text-xs font-extrabold rounded-full uppercase tracking-wider">Day 2 Lesson</span>
+                    <div id="d2-banner-text">
+                        <h2 class="text-2xl font-extrabold">Day 2: Reading Speech Chunks 1 & 2</h2>
+                        <p class="text-sm text-purple-100">Read Susan B. Anthony's speech in small, manageable chunks with line-by-line audio support.</p>
+                    </div>
+                </div>
+
+                <!-- Speech Chunk 1 -->
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border-2 border-slate-200 dark:border-slate-700 shadow-sm space-y-4">
+                    <div class="flex justify-between items-center border-b pb-3">
+                        <span class="text-xs font-extrabold text-purple-800 dark:text-purple-300 uppercase tracking-wider">Speech Chunk 1 — The Alleged Crime</span>
+                        <button onclick="speakElement('speech-chunk-1')" class="tts-btn px-3 py-1.5 bg-purple-100 dark:bg-purple-900 text-purple-900 dark:text-purple-200 rounded-xl text-xs font-extrabold flex items-center space-x-1 border border-purple-300">
+                            <i class="fa-solid fa-volume-high"></i> <span>Read Paragraph Out Loud</span>
+                        </button>
+                    </div>
+
+                    <blockquote id="speech-chunk-1" class="p-4 bg-purple-50/70 dark:bg-slate-900 border-l-4 border-purple-600 rounded-r-xl text-base font-serif italic leading-relaxed text-slate-800 dark:text-slate-200">
+                        "Friends and fellow citizens: I stand before you tonight under indictment for the alleged crime of having voted at the last presidential election, without having a lawful right to vote. It shall be my work this evening to prove to you that in thus voting, I not only committed no crime, but, instead, simply exercised my citizen's rights, guaranteed to me and all United States citizens by the National Constitution, beyond the power of any state to deny."
+                    </blockquote>
+
+                    <!-- Reduced-Choice Check -->
+                    <div class="p-4 bg-slate-50 dark:bg-slate-900 rounded-2xl space-y-3 border">
+                        <div class="flex justify-between items-center">
+                            <label id="d2-q1-lbl" class="text-xs font-extrabold text-slate-900 dark:text-slate-100">
+                                Check-In: What is Susan B. Anthony's purpose in this opening chunk?
+                            </label>
+                            <button onclick="speakElement('d2-q1-lbl')" class="tts-btn text-xs text-blue-600 p-1"><i class="fa-solid fa-volume-high"></i></button>
+                        </div>
+
+                        <div class="space-y-2 text-xs font-bold">
+                            <label class="flex items-center space-x-2.5 p-2 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 cursor-pointer hover:bg-slate-100">
+                                <input type="radio" name="d2q1" value="wrong" class="accent-purple-600 w-4 h-4">
+                                <span>A) To apologize for breaking the election rules</span>
+                            </label>
+                            <label class="flex items-center space-x-2.5 p-2 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 cursor-pointer hover:bg-slate-100">
+                                <input type="radio" name="d2q1" value="correct" class="accent-purple-600 w-4 h-4">
+                                <span>B) To prove that voting is a right guaranteed to all citizens by the Constitution</span>
+                            </label>
+                        </div>
+                        <button onclick="checkDay2Q1()" class="px-4 py-2 bg-purple-700 text-white font-extrabold text-xs rounded-xl shadow">Check Answer</button>
+                        <div id="d2-q1-fb" class="text-xs font-bold hidden p-2 rounded-lg"></div>
+                    </div>
+                </div>
+
+                <!-- Speech Chunk 2 -->
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border-2 border-slate-200 dark:border-slate-700 shadow-sm space-y-4">
+                    <div class="flex justify-between items-center border-b pb-3">
+                        <span class="text-xs font-extrabold text-purple-800 dark:text-purple-300 uppercase tracking-wider">Speech Chunk 2 — "We, The Whole People"</span>
+                        <button onclick="speakElement('speech-chunk-2')" class="tts-btn px-3 py-1.5 bg-purple-100 dark:bg-purple-900 text-purple-900 dark:text-purple-200 rounded-xl text-xs font-extrabold flex items-center space-x-1 border border-purple-300">
+                            <i class="fa-solid fa-volume-high"></i> <span>Read Paragraph Out Loud</span>
+                        </button>
+                    </div>
+
+                    <blockquote id="speech-chunk-2" class="p-4 bg-purple-50/70 dark:bg-slate-900 border-l-4 border-purple-600 rounded-r-xl text-base font-serif italic leading-relaxed text-slate-800 dark:text-slate-200">
+                        "It was we, the people; not we, the white male citizens; nor yet we, the male citizens; but we, the whole people, who formed the Union. And we formed it, not to give the blessings of liberty, but to secure them; not to the half of ourselves and the half of our posterity, but to the whole people - women as well as men."
+                    </blockquote>
+
+                    <!-- Scaffolded Fill-in Sentence Summary -->
+                    <div class="p-4 bg-slate-50 dark:bg-slate-900 rounded-2xl space-y-3 border">
+                        <div class="flex justify-between items-center">
+                            <label id="d2-q2-lbl" class="text-xs font-extrabold text-slate-900 dark:text-slate-100">
+                                Sentence Summary Activity: Choose the correct word to complete the summary.
+                            </label>
+                            <button onclick="speakElement('d2-q2-lbl')" class="tts-btn text-xs text-blue-600 p-1"><i class="fa-solid fa-volume-high"></i></button>
+                        </div>
+
+                        <div class="text-xs font-medium space-y-2 leading-loose">
+                            <span>Anthony states that the Constitution was formed by </span>
+                            <select id="d2-summary-select" class="p-2 border-2 border-purple-300 rounded-xl font-bold bg-white dark:bg-slate-800 text-xs">
+                                <option value="">-- Choose Word --</option>
+                                <option value="wrong">only male citizens</option>
+                                <option value="correct">the whole people (women too)</option>
+                            </select>
+                            <span>, so liberty belongs to everyone.</span>
+                        </div>
+                        <button onclick="checkDay2Q2()" class="px-4 py-2 bg-purple-700 text-white font-extrabold text-xs rounded-xl shadow">Verify Sentence</button>
+                        <div id="d2-q2-fb" class="text-xs font-bold hidden p-2 rounded-lg"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================= DAY 3 MODULE ================= -->
+            <section id="content-day-3" class="day-content hidden space-y-6">
+                <!-- Banner -->
+                <div class="bg-amber-900 text-white p-6 rounded-2xl shadow-md space-y-2 border-l-8 border-amber-500 relative">
+                    <button onclick="speakElement('d3-banner-text')" title="Read Aloud Banner" class="tts-btn absolute top-4 right-4 bg-white/20 hover:bg-white/30 text-white p-2.5 rounded-xl text-xs font-bold transition flex items-center space-x-1.5">
+                        <i class="fa-solid fa-volume-high text-base"></i>
+                        <span>Listen</span>
+                    </button>
+                    <span class="px-3 py-1 bg-amber-700 text-amber-100 text-xs font-extrabold rounded-full uppercase tracking-wider">Day 3 Lesson</span>
+                    <div id="d3-banner-text">
+                        <h2 class="text-2xl font-extrabold">Day 3: Key Vocabulary & Main Claim</h2>
+                        <p class="text-sm text-amber-100">Master hard legal vocabulary terms and locate Anthony's central claim.</p>
+                    </div>
+                </div>
+
+                <!-- Vocabulary Audio Flashcards -->
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border-2 border-slate-200 dark:border-slate-700 shadow-sm space-y-4">
+                    <div class="flex items-center justify-between border-b pb-3">
+                        <div class="flex items-center space-x-2">
+                            <span class="p-2 bg-amber-100 text-amber-900 rounded-lg text-sm font-bold"><i class="fa-solid fa-book-bookmark"></i></span>
+                            <h3 class="text-lg font-extrabold text-slate-900 dark:text-white">Task 1: Legal Vocabulary Audio Cards</h3>
+                        </div>
+                        <button onclick="speakText('Click on any vocabulary card speaker button to listen to its speech definition out loud.')" class="tts-btn text-xs bg-amber-50 text-amber-950 p-2 rounded-xl font-bold flex items-center space-x-1">
+                            <i class="fa-solid fa-volume-high text-amber-700"></i>
+                            <span>Read Directions</span>
+                        </button>
+                    </div>
+
+                    <div class="grid gap-3 sm:grid-cols-2">
+                        <!-- Card 1 -->
+                        <div class="p-4 bg-amber-50/50 dark:bg-slate-900 border-2 border-amber-200 dark:border-slate-700 rounded-2xl space-y-2">
+                            <div class="flex justify-between items-center">
+                                <span class="font-extrabold text-amber-950 dark:text-amber-300 text-sm">Oligarchy (noun)</span>
+                                <button onclick="speakText('Oligarchy: A small group of people having control over an entire country.')" class="tts-btn text-amber-700 text-xs p-1"><i class="fa-solid fa-volume-high"></i></button>
+                            </div>
+                            <p class="text-xs text-slate-700 dark:text-slate-300">A small group of people holding all political power in a government.</p>
+                        </div>
+
+                        <!-- Card 2 -->
+                        <div class="p-4 bg-amber-50/50 dark:bg-slate-900 border-2 border-amber-200 dark:border-slate-700 rounded-2xl space-y-2">
+                            <div class="flex justify-between items-center">
+                                <span class="font-extrabold text-amber-950 dark:text-amber-300 text-sm">Disenfranchisement</span>
+                                <button onclick="speakText('Disenfranchisement: Taking away someone\'s legal right or privilege to vote.')" class="tts-btn text-amber-700 text-xs p-1"><i class="fa-solid fa-volume-high"></i></button>
+                            </div>
+                            <p class="text-xs text-slate-700 dark:text-slate-300">Taking away someone's right or privilege to vote in elections.</p>
+                        </div>
+
+                        <!-- Card 3 -->
+                        <div class="p-4 bg-amber-50/50 dark:bg-slate-900 border-2 border-amber-200 dark:border-slate-700 rounded-2xl space-y-2">
+                            <div class="flex justify-between items-center">
+                                <span class="font-extrabold text-amber-950 dark:text-amber-300 text-sm">Bill of Attainder</span>
+                                <button onclick="speakText('Bill of Attainder: A law that punishes someone without giving them a fair court trial.')" class="tts-btn text-amber-700 text-xs p-1"><i class="fa-solid fa-volume-high"></i></button>
+                            </div>
+                            <p class="text-xs text-slate-700 dark:text-slate-300">A law that imposes punishment on a group without giving them a trial.</p>
+                        </div>
+
+                        <!-- Card 4 -->
+                        <div class="p-4 bg-amber-50/50 dark:bg-slate-900 border-2 border-amber-200 dark:border-slate-700 rounded-2xl space-y-2">
+                            <div class="flex justify-between items-center">
+                                <span class="font-extrabold text-amber-950 dark:text-amber-300 text-sm">Ex Post Facto Law</span>
+                                <button onclick="speakText('Ex Post Facto Law: A law that retroactively makes an action illegal after it was committed.')" class="tts-btn text-amber-700 text-xs p-1"><i class="fa-solid fa-volume-high"></i></button>
+                            </div>
+                            <p class="text-xs text-slate-700 dark:text-slate-300">A law that retroactively makes an action illegal after it was already done.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Task 2: Clickable Main Claim Finder -->
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border-2 border-slate-200 dark:border-slate-700 shadow-sm space-y-4">
+                    <div class="flex items-center justify-between border-b pb-3">
+                        <div class="flex items-center space-x-2">
+                            <span class="p-2 bg-amber-100 text-amber-900 rounded-lg text-sm font-bold"><i class="fa-solid fa-highlighter"></i></span>
+                            <h3 class="text-lg font-extrabold text-slate-900 dark:text-white">Task 2: Locate the Central Claim</h3>
+                        </div>
+                        <button onclick="speakElement('d3-claim-prompt')" class="tts-btn text-xs bg-amber-50 text-amber-950 p-2 rounded-xl font-bold flex items-center space-x-1">
+                            <i class="fa-solid fa-volume-high text-amber-700"></i>
+                            <span>Read Directions</span>
+                        </button>
+                    </div>
+
+                    <p id="d3-claim-prompt" class="text-sm text-slate-700 dark:text-slate-300">Click directly on the sentence below that best states Susan B. Anthony's central claim:</p>
+
+                    <div class="p-4 bg-amber-50/40 dark:bg-slate-900 border-2 border-amber-300 rounded-2xl font-serif text-base space-y-3 leading-relaxed">
+                        <p class="sentence-clickable rounded-xl p-2 transition" onclick="selectClaimSentence(this, false)">
+                            "Webster, Worcester, and Bouvier all define a citizen to be a person in the United States, entitled to vote and hold office."
+                        </p>
+                        <p class="sentence-clickable rounded-xl p-2 transition" onclick="selectClaimSentence(this, true)">
+                            "Being persons, then, women are citizens; and no state has a right to make any law, or to enforce any old law, that shall abridge their privileges or immunities."
+                        </p>
+                        <p class="sentence-clickable rounded-xl p-2 transition" onclick="selectClaimSentence(this, false)">
+                            "Hence, every discrimination against women in the constitutions and laws of the several states is today null and void."
+                        </p>
+                    </div>
+
+                    <div id="claim-fb-box" class="hidden p-3.5 rounded-xl text-xs font-bold"></div>
+                </div>
+            </section>
+
+            <!-- ================= DAY 4 MODULE ================= -->
+            <section id="content-day-4" class="day-content hidden space-y-6">
+                <!-- Banner -->
+                <div class="bg-emerald-900 text-white p-6 rounded-2xl shadow-md space-y-2 border-l-8 border-emerald-500 relative">
+                    <button onclick="speakElement('d4-banner-text')" title="Read Aloud Banner" class="tts-btn absolute top-4 right-4 bg-white/20 hover:bg-white/30 text-white p-2.5 rounded-xl text-xs font-bold transition flex items-center space-x-1.5">
+                        <i class="fa-solid fa-volume-high text-base"></i>
+                        <span>Listen</span>
+                    </button>
+                    <span class="px-3 py-1 bg-emerald-700 text-emerald-100 text-xs font-extrabold rounded-full uppercase tracking-wider">Day 4 Lesson</span>
+                    <div id="d4-banner-text">
+                        <h2 class="text-2xl font-extrabold">Day 4: Logic vs. Fallacies Evaluator</h2>
+                        <p class="text-sm text-emerald-100">Determine whether Anthony's claims use valid legal reasoning or logical hyperbole (exaggeration).</p>
+                    </div>
+                </div>
+
+                <!-- Claim Card 1 -->
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border-2 border-slate-200 dark:border-slate-700 shadow-sm space-y-4">
+                    <div class="flex items-center justify-between border-b pb-2">
+                        <span class="text-xs font-extrabold px-3 py-1 bg-emerald-100 text-emerald-900 rounded-md">Claim Card 1</span>
+                        <button onclick="speakElement('claim-card-1-text')" class="tts-btn text-xs text-emerald-700 p-1"><i class="fa-solid fa-volume-high"></i> Listen</button>
+                    </div>
+
+                    <p id="claim-card-1-text" class="text-base font-bold text-slate-800 dark:text-slate-200">
+                        "Excluding women from voting creates an 'oligarchy of sex' where men act as rulers over women in every household."
+                    </p>
+
+                    <p class="text-xs text-slate-600 dark:text-slate-400">Is this reasoning valid? (Remember: An oligarchy is a small group holding all political control.)</p>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <button onclick="checkLogicCard(1, true)" class="p-3 bg-emerald-50 hover:bg-emerald-100 dark:bg-slate-900 text-emerald-900 dark:text-emerald-300 font-extrabold border-2 border-emerald-500 rounded-xl text-xs transition flex flex-col items-center">
+                            <i class="fa-solid fa-circle-check text-lg mb-1"></i>
+                            <span>VALID LOGIC</span>
+                        </button>
+                        <button onclick="checkLogicCard(1, false)" class="p-3 bg-rose-50 hover:bg-rose-100 dark:bg-slate-900 text-rose-900 dark:text-rose-300 font-extrabold border-2 border-rose-300 rounded-xl text-xs transition flex flex-col items-center">
+                            <i class="fa-solid fa-triangle-exclamation text-lg mb-1"></i>
+                            <span>EXAGGERATION / FALLACY</span>
+                        </button>
+                    </div>
+                    <div id="logic-fb-1" class="hidden p-3 rounded-xl text-xs font-bold"></div>
+                </div>
+
+                <!-- Claim Card 2 -->
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border-2 border-slate-200 dark:border-slate-700 shadow-sm space-y-4">
+                    <div class="flex items-center justify-between border-b pb-2">
+                        <span class="text-xs font-extrabold px-3 py-1 bg-emerald-100 text-emerald-900 rounded-md">Claim Card 2</span>
+                        <button onclick="speakElement('claim-card-2-text')" class="tts-btn text-xs text-emerald-700 p-1"><i class="fa-solid fa-volume-high"></i> Listen</button>
+                    </div>
+
+                    <p id="claim-card-2-text" class="text-base font-bold text-slate-800 dark:text-slate-200">
+                        "An oligarchy of sex is WORSE than an oligarchy of wealth, education, or race."
+                    </p>
+
+                    <p class="text-xs text-slate-600 dark:text-slate-400">Is this reasoning valid?</p>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <button onclick="checkLogicCard(2, false)" class="p-3 bg-emerald-50 hover:bg-emerald-100 dark:bg-slate-900 text-emerald-900 dark:text-emerald-300 font-extrabold border-2 border-emerald-300 rounded-xl text-xs transition flex flex-col items-center">
+                            <i class="fa-solid fa-circle-check text-lg mb-1"></i>
+                            <span>VALID LOGIC</span>
+                        </button>
+                        <button onclick="checkLogicCard(2, true)" class="p-3 bg-rose-50 hover:bg-rose-100 dark:bg-slate-900 text-rose-900 dark:text-rose-300 font-extrabold border-2 border-rose-500 rounded-xl text-xs transition flex flex-col items-center">
+                            <i class="fa-solid fa-triangle-exclamation text-lg mb-1"></i>
+                            <span>EXAGGERATION / HYPERBOLE</span>
+                        </button>
+                    </div>
+                    <div id="logic-fb-2" class="hidden p-3 rounded-xl text-xs font-bold"></div>
+                </div>
+            </section>
+
+            <!-- ================= DAY 5 MODULE ================= -->
+            <section id="content-day-5" class="day-content hidden space-y-6">
+                <!-- Banner -->
+                <div class="bg-slate-900 text-white p-6 rounded-2xl shadow-md space-y-2 border-l-8 border-emerald-500 relative">
+                    <button onclick="speakElement('d5-banner-text')" title="Read Aloud Banner" class="tts-btn absolute top-4 right-4 bg-white/20 hover:bg-white/30 text-white p-2.5 rounded-xl text-xs font-bold transition flex items-center space-x-1.5">
+                        <i class="fa-solid fa-volume-high text-base"></i>
+                        <span>Listen</span>
+                    </button>
+                    <span class="px-3 py-1 bg-emerald-600 text-white text-xs font-extrabold rounded-full uppercase tracking-wider">Day 5 Final Task</span>
+                    <div id="d5-banner-text">
+                        <h2 class="text-2xl font-extrabold">Day 5: Self-Assessment & Exit Ticket</h2>
+                        <p class="text-sm text-slate-300">Rate your understanding and complete your 3-question exit ticket.</p>
+                    </div>
+                </div>
+
+                <!-- Self Rating 1-4 Scale -->
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border-2 border-slate-200 dark:border-slate-700 shadow-sm space-y-4">
+                    <div class="flex justify-between items-center border-b pb-2">
+                        <h3 id="self-rate-title" class="text-base font-extrabold text-slate-900 dark:text-white">Step 1: Self-Assessment Understanding Scale</h3>
+                        <button onclick="speakElement('self-rate-title')" class="tts-btn text-xs text-blue-600 p-1"><i class="fa-solid fa-volume-high"></i></button>
+                    </div>
+
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <button onclick="selectSelfScore(1)" class="p-3.5 rounded-2xl border-2 border-slate-200 dark:border-slate-700 hover:border-blue-600 text-center space-y-1 transition bg-slate-50 dark:bg-slate-900">
+                            <div class="text-2xl font-extrabold text-slate-400">1</div>
+                            <div class="text-xs font-bold">Need Help Starting</div>
+                        </button>
+                        <button onclick="selectSelfScore(2)" class="p-3.5 rounded-2xl border-2 border-slate-200 dark:border-slate-700 hover:border-amber-500 text-center space-y-1 transition bg-slate-50 dark:bg-slate-900">
+                            <div class="text-2xl font-extrabold text-amber-500">2</div>
+                            <div class="text-xs font-bold">Understand Claims OR Evidence</div>
+                        </button>
+                        <button onclick="selectSelfScore(3)" class="p-3.5 rounded-2xl border-2 border-slate-200 dark:border-slate-700 hover:border-blue-500 text-center space-y-1 transition bg-slate-50 dark:bg-slate-900">
+                            <div class="text-2xl font-extrabold text-blue-500">3</div>
+                            <div class="text-xs font-bold">Understand Both Well</div>
+                        </button>
+                        <button onclick="selectSelfScore(4)" class="p-3.5 rounded-2xl border-2 border-slate-200 dark:border-slate-700 hover:border-emerald-500 text-center space-y-1 transition bg-slate-50 dark:bg-slate-900">
+                            <div class="text-2xl font-extrabold text-emerald-500">4</div>
+                            <div class="text-xs font-bold">I Could Teach This!</div>
+                        </button>
+                    </div>
+                    <div id="self-score-fb" class="hidden p-3 rounded-xl text-xs font-bold bg-blue-100 text-blue-900"></div>
+                </div>
+
+                <!-- Accommodated Exit Quiz (2 Choices Each) -->
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border-2 border-slate-200 dark:border-slate-700 shadow-sm space-y-4">
+                    <h3 class="text-base font-extrabold text-slate-900 dark:text-white border-b pb-2">Step 2: Exit Ticket Quiz</h3>
+
+                    <!-- Q1 -->
+                    <div class="p-4 bg-slate-50 dark:bg-slate-900 rounded-2xl border space-y-2">
+                        <div class="flex justify-between items-center">
+                            <p id="eq1-lbl" class="text-xs font-extrabold text-slate-900 dark:text-slate-100">1. What document did Susan B. Anthony quote to prove women are citizens?</p>
+                            <button onclick="speakElement('eq1-lbl')" class="tts-btn text-xs text-blue-600 p-1"><i class="fa-solid fa-volume-high"></i></button>
+                        </div>
+                        <div class="space-y-1.5 text-xs font-bold">
+                            <label class="flex items-center space-x-2 p-2 bg-white dark:bg-slate-800 rounded-xl border border-slate-200"><input type="radio" name="eq1" value="a" class="accent-blue-600"><span>A) The U.S. Constitution Preamble</span></label>
+                            <label class="flex items-center space-x-2 p-2 bg-white dark:bg-slate-800 rounded-xl border border-slate-200"><input type="radio" name="eq1" value="b" class="accent-blue-600"><span>B) A city newspaper article</span></label>
+                        </div>
+                    </div>
+
+                    <!-- Q2 -->
+                    <div class="p-4 bg-slate-50 dark:bg-slate-900 rounded-2xl border space-y-2">
+                        <div class="flex justify-between items-center">
+                            <p id="eq2-lbl" class="text-xs font-extrabold text-slate-900 dark:text-slate-100">2. What does "Disenfranchisement" mean?</p>
+                            <button onclick="speakElement('eq2-lbl')" class="tts-btn text-xs text-blue-600 p-1"><i class="fa-solid fa-volume-high"></i></button>
+                        </div>
+                        <div class="space-y-1.5 text-xs font-bold">
+                            <label class="flex items-center space-x-2 p-2 bg-white dark:bg-slate-800 rounded-xl border border-slate-200"><input type="radio" name="eq2" value="a" class="accent-blue-600"><span>A) Depriving someone of the right to vote</span></label>
+                            <label class="flex items-center space-x-2 p-2 bg-white dark:bg-slate-800 rounded-xl border border-slate-200"><input type="radio" name="eq2" value="b" class="accent-blue-600"><span>B) Winning a national prize</span></label>
+                        </div>
+                    </div>
+
+                    <!-- Q3 -->
+                    <div class="p-4 bg-slate-50 dark:bg-slate-900 rounded-2xl border space-y-2">
+                        <div class="flex justify-between items-center">
+                            <p id="eq3-lbl" class="text-xs font-extrabold text-slate-900 dark:text-slate-100">3. When Anthony said denying women the vote was like treating them as criminals, what fallacy did she use?</p>
+                            <button onclick="speakElement('eq3-lbl')" class="tts-btn text-xs text-blue-600 p-1"><i class="fa-solid fa-volume-high"></i></button>
+                        </div>
+                        <div class="space-y-1.5 text-xs font-bold">
+                            <label class="flex items-center space-x-2 p-2 bg-white dark:bg-slate-800 rounded-xl border border-slate-200"><input type="radio" name="eq3" value="a" class="accent-blue-600"><span>A) Hyperbole (exaggeration)</span></label>
+                            <label class="flex items-center space-x-2 p-2 bg-white dark:bg-slate-800 rounded-xl border border-slate-200"><input type="radio" name="eq3" value="b" class="accent-blue-600"><span>B) A mathematical calculation</span></label>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-between items-center pt-2">
+                        <div id="final-exit-score" class="text-sm font-extrabold text-emerald-600"></div>
+                        <button onclick="submitExitTicket()" class="px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold rounded-xl shadow transition text-sm">
+                            Submit Final Module
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Application Script Logic -->
+    <script>
+        let currentDay = 1;
+        let starCount = 0;
+        let synth = window.speechSynthesis;
+        let currentUtterance = null;
+        let ttsSpeed = 0.8; // Preferred default speed for IEP learners
+
+        // High Contrast Theme Switcher
+        document.getElementById('theme-toggle').addEventListener('click', () => {
+            document.documentElement.classList.toggle('dark');
+        });
+
+        /* --- Master Text-to-Speech Functions --- */
+        function toggleTTSSpeed() {
+            ttsSpeed = ttsSpeed === 0.8 ? 1.0 : 0.8;
+            document.getElementById('tts-speed-label').innerText = `${ttsSpeed}x`;
+            if (synth.speaking) {
+                stopTTS();
+            }
+        }
+
+        function speakText(text, buttonEl = null) {
+            if (!synth) return;
+            
+            // Cancel previous speech
+            stopTTS();
+
+            // Clear visual pulse classes
+            document.querySelectorAll('.tts-btn').forEach(b => b.classList.remove('tts-active'));
+            if (buttonEl) buttonEl.classList.add('tts-active');
+
+            currentUtterance = new SpeechSynthesisUtterance(text);
+            currentUtterance.rate = ttsSpeed;
+            currentUtterance.pitch = 1.0;
+
+            currentUtterance.onend = () => {
+                if (buttonEl) buttonEl.classList.remove('tts-active');
+            };
+
+            currentUtterance.onerror = () => {
+                if (buttonEl) buttonEl.classList.remove('tts-active');
+            };
+
+            synth.speak(currentUtterance);
+        }
+
+        function speakElement(elementId) {
+            const el = document.getElementById(elementId);
+            if (el) {
+                speakText(el.innerText);
+            }
+        }
+
+        function pauseResumeTTS() {
+            if (!synth) return;
+            if (synth.speaking && !synth.paused) {
+                synth.pause();
+                document.getElementById('tts-pause-btn').innerHTML = '<i class="fa-solid fa-play"></i> <span class="hidden sm:inline">Resume</span>';
+            } else if (synth.paused) {
+                synth.resume();
+                document.getElementById('tts-pause-btn').innerHTML = '<i class="fa-solid fa-pause"></i> <span class="hidden sm:inline">Pause</span>';
+            }
+        }
+
+        function stopTTS() {
+            if (synth) {
+                synth.cancel();
+            }
+            document.querySelectorAll('.tts-btn').forEach(b => b.classList.remove('tts-active'));
+            const pauseBtn = document.getElementById('tts-pause-btn');
+            if (pauseBtn) {
+                pauseBtn.innerHTML = '<i class="fa-solid fa-pause"></i> <span class="hidden sm:inline">Pause</span>';
+            }
+        }
+
+        /* --- Day Navigation & Stars --- */
+        function switchDay(dayNum) {
+            stopTTS();
+            currentDay = dayNum;
+
+            document.querySelectorAll('.day-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.day-tab').forEach(btn => {
+                btn.className = "day-tab w-full flex items-center space-x-3 p-3 rounded-xl font-bold text-sm text-left text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700/50 transition";
+            });
+
+            document.getElementById(`content-day-${dayNum}`).classList.remove('hidden');
+            const activeBtn = document.getElementById(`day-btn-${dayNum}`);
+            activeBtn.className = "day-tab w-full flex items-center space-x-3 p-3 rounded-xl font-bold text-sm text-left transition bg-blue-100 text-blue-950 border-2 border-blue-600 dark:bg-blue-950 dark:text-blue-200";
+
+            // Update progress bar width
+            const pct = (dayNum / 5) * 100;
+            document.getElementById('overall-progress').style.width = `${pct}%`;
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function addStar() {
+            starCount += 1;
+            document.getElementById('star-count').innerHTML = `<i class="fa-solid fa-star text-amber-400"></i> <span>${starCount} Stars</span>`;
+        }
+
+        function markDayComplete(dayNum) {
+            const checkIcon = document.getElementById(`check-day-${dayNum}`);
+            if (checkIcon) checkIcon.classList.remove('hidden');
+        }
+
+        function toggleHint(id) {
+            document.getElementById(id).classList.toggle('hidden');
+        }
+
+        /* --- Interactive Task Handlers --- */
+        function checkCERDay1() {
+            const c = document.getElementById('cer-select-c').value;
+            const e = document.getElementById('cer-select-e').value;
+            const r = document.getElementById('cer-select-r').value;
+            const fb = document.getElementById('cer-feedback');
+
+            fb.classList.remove('hidden', 'bg-emerald-100', 'text-emerald-950', 'bg-rose-100', 'text-rose-950');
+
+            if (c === 'correct' && e === 'correct' && r === 'correct') {
+                fb.classList.add('bg-emerald-100', 'text-emerald-950');
+                fb.innerHTML = '<i class="fa-solid fa-circle-check mr-1"></i> Outstanding! You correctly matched C-E-R!';
+                addStar();
+                markDayComplete(1);
+                confetti({ particleCount: 30, spread: 50 });
+            } else {
+                fb.classList.add('bg-rose-100', 'text-rose-950');
+                fb.innerHTML = '<i class="fa-solid fa-circle-xmark mr-1"></i> Try again! Click "Need a Hint?" for help.';
+            }
+        }
+
+        function saveDay1Answer() {
+            const txt = document.getElementById('d1-video-response').value.trim();
+            if (txt.length > 5) {
+                document.getElementById('d1-save-status').classList.remove('hidden');
+                addStar();
+                markDayComplete(1);
+            }
+        }
+
+        function checkDay2Q1() {
+            const selected = document.querySelector('input[name="d2q1"]:checked');
+            const fb = document.getElementById('d2-q1-fb');
+            fb.classList.remove('hidden', 'bg-emerald-100', 'text-emerald-900', 'bg-rose-100', 'text-rose-900');
+
+            if (selected && selected.value === 'correct') {
+                fb.classList.add('bg-emerald-100', 'text-emerald-900');
+                fb.innerHTML = '<i class="fa-solid fa-check mr-1"></i> Correct! She argues voting is a constitutional right.';
+                addStar();
+            } else {
+                fb.classList.add('bg-rose-100', 'text-rose-900');
+                fb.innerHTML = '<i class="fa-solid fa-xmark mr-1"></i> Try again! Read option B carefully.';
+            }
+        }
+
+        function checkDay2Q2() {
+            const val = document.getElementById('d2-summary-select').value;
+            const fb = document.getElementById('d2-q2-fb');
+            fb.classList.remove('hidden', 'bg-emerald-100', 'text-emerald-900', 'bg-rose-100', 'text-rose-900');
+
+            if (val === 'correct') {
+                fb.classList.add('bg-emerald-100', 'text-emerald-900');
+                fb.innerHTML = '<i class="fa-solid fa-check mr-1"></i> Excellent sentence summary completion!';
+                addStar();
+                markDayComplete(2);
+            } else {
+                fb.classList.add('bg-rose-100', 'text-rose-900');
+                fb.innerHTML = '<i class="fa-solid fa-xmark mr-1"></i> Choose "the whole people (women too)".';
+            }
+        }
+
+        function selectClaimSentence(el, isCorrect) {
+            document.querySelectorAll('.sentence-clickable').forEach(s => s.classList.remove('sentence-selected'));
+            el.classList.add('sentence-selected');
+
+            const fb = document.getElementById('claim-fb-box');
+            fb.classList.remove('hidden', 'bg-emerald-100', 'text-emerald-900', 'bg-rose-100', 'text-rose-900');
+
+            if (isCorrect) {
+                fb.classList.add('bg-emerald-100', 'text-emerald-900');
+                fb.innerHTML = '<i class="fa-solid fa-star text-amber-500 mr-1"></i> Correct! "Being persons, then, women are citizens..." is her central claim!';
+                addStar();
+                markDayComplete(3);
+                confetti({ particleCount: 35, spread: 55 });
+            } else {
+                fb.classList.add('bg-rose-100', 'text-rose-900');
+                fb.innerHTML = '<i class="fa-solid fa-arrow-right mr-1"></i> Close! Look for the sentence stating women are persons and citizens.';
+            }
+        }
+
+        function checkLogicCard(cardNum, isCorrect) {
+            const fb = document.getElementById(`logic-fb-${cardNum}`);
+            fb.classList.remove('hidden', 'bg-emerald-100', 'text-emerald-950', 'bg-rose-100', 'text-rose-950');
+
+            if (isCorrect) {
+                fb.classList.add('bg-emerald-100', 'text-emerald-950');
+                fb.innerHTML = cardNum === 1 
+                    ? '<i class="fa-solid fa-check mr-1"></i> Correct! Men held all control, making it an oligarchy.'
+                    : '<i class="fa-solid fa-check mr-1"></i> Correct! Saying it is WORSE than all other oppressions is hyperbole (exaggeration).';
+                addStar();
+                if (cardNum === 2) markDayComplete(4);
+            } else {
+                fb.classList.add('bg-rose-100', 'text-rose-950');
+                fb.innerHTML = '<i class="fa-solid fa-xmark mr-1"></i> Try selecting the other option!';
+            }
+        }
+
+        function selectSelfScore(score) {
+            const fb = document.getElementById('self-score-fb');
+            fb.classList.remove('hidden');
+            fb.innerHTML = `<i class="fa-solid fa-circle-check mr-1"></i> Recorded Level ${score} self-assessment!`;
+            addStar();
+        }
+
+        function submitExitTicket() {
+            let score = 0;
+            if (document.querySelector('input[name="eq1"]:checked')?.value === 'a') score++;
+            if (document.querySelector('input[name="eq2"]:checked')?.value === 'a') score++;
+            if (document.querySelector('input[name="eq3"]:checked')?.value === 'a') score++;
+
+            const fb = document.getElementById('final-exit-score');
+            fb.innerHTML = `Module Complete! Score: ${score}/3 🎉`;
+            addStar();
+            markDayComplete(5);
+            confetti({ particleCount: 90, spread: 70 });
+        }
+    </script>
+</body>
+</html>
